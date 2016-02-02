@@ -175,7 +175,7 @@ local function parse_file(fname, lang, package, args)
    local tok
 
    local function lineno ()
-      return tok:lineno()
+      return lexer.lineno(tok)
    end
 
    function F:warning (msg,line)
