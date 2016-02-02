@@ -80,9 +80,9 @@ function Lua:_init()
 end
 
 function Lua.lexer(fname)
-   local f,e = io.open(fname)
-   if not f then quit(e) end
-   return lexer.lua(f,{}),f
+   local src, err = utils.readfile(fname)
+   if not src then quit(err) end
+   return lexer.lua(src,{})
 end
 
 function Lua:grab_block_comment(v,tok)
@@ -240,11 +240,6 @@ function Lua:parse_module_modifier (tags, tok, F)
    end
 end
 
-
--- note a difference here: we scan C/C++ code in full-text mode, not line by line.
--- This is because we can't detect multiline comments in line mode.
--- Note: this applies to C/C++ code used to generate _Lua_ documentation!
-
 local CC = class(Lang)
 
 function CC:_init()
@@ -255,11 +250,10 @@ function CC:_init()
    self:finalize()
 end
 
-function CC.lexer(f)
-   local err
-   f,err = utils.readfile(f)
-   if not f then quit(err) end
-   return lexer.cpp(f,{},nil,true)
+function CC.lexer(fname)
+   local src, err = utils.readfile(fname)
+   if not src then quit(err) end
+   return lexer.cpp(src,{},nil,true)
 end
 
 function CC:grab_block_comment(v,tok)

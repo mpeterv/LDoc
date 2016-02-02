@@ -172,7 +172,7 @@ local function parse_file(fname, lang, package, args)
    F.lang = lang
    F.base = package
 
-   local tok, f
+   local tok
 
    local function lineno ()
       return tok:lineno()
@@ -189,7 +189,7 @@ local function parse_file(fname, lang, package, args)
       os.exit(1)
    end
 
-   tok, f = lang.lexer(fname)
+   tok = lang.lexer(fname)
    if not tok then
       F:warning('empty file', 1)
       return nil
@@ -386,9 +386,7 @@ local function parse_file(fname, lang, package, args)
       if t ~= 'comment' then t,v = tok() end
    end
    end,debug.traceback)
-   if not ok then return F, err end
-   if f then f:close() end
-   return F
+   return F, err
 end
 
 -- Parses a file, returns an instance of doc.File or nil.
