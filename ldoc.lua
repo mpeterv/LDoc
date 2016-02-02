@@ -407,9 +407,7 @@ local function process_file (f, flist)
       ftype.extra = ldoc.parse_extra or {}
       local F,err = parse.file(f,ftype,args)
       if err then
-         if F then
-            F:warning("internal LDoc error")
-         end
+         F:warning("internal LDoc error")
          quit(err)
       end
       flist:append(F)
@@ -496,7 +494,7 @@ elseif path.isfile(args.file) then
       end
    end
    process_file(args.file, file_list)
-   if #file_list == 0 then quit "unsupported file extension" end
+   if #file_list == 0 then quit "no files to process" end
 else
    quit ("file or directory does not exist: "..quote(args.file))
 end

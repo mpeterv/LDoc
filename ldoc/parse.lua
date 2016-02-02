@@ -172,7 +172,6 @@ end
 -- module if there isn't an explicit module name specified.
 
 local function parse_file(fname, lang, package, args)
-   local line,f = 1
    local F = File(fname)
    local module_found, first_comment = false,true
    local current_item, module_item
@@ -181,26 +180,30 @@ local function parse_file(fname, lang, package, args)
    F.lang = lang
    F.base = package
 
-   local tok,f = lang.lexer(fname)
-   if not tok then return nil end
+   local tok, f
 
    local function lineno ()
       return tok:lineno()
    end
 
-   local function filename () return fname end
-
-   function F:warning (msg,kind,line)
-      kind = kind or 'warning'
+   function F:warning (msg,line)
       line = line or lineno()
       io.stderr:write(fname..':'..line..': '..msg,'\n')
    end
 
    function F:error (msg)
-      self:warning(msg,'error')
+      self:warning(msg)
       io.stderr:write('LDoc error\n')
       os.exit(1)
    end
+
+   tok, f = lang.lexer(fname)
+   if not tok then
+      F:warning('empty file', 1)
+      return nil
+   end
+
+   local function filename () return fname end
 
    local function add_module(tags,module_found,old_style)
       tags:add('name',module_found)
@@ -346,7 +349,7 @@ local function parse_file(fname, lang, package, args)
             add_module(tags,module_found,old_style)
             tags = nil
             if not t then
-               F:warning('contains no items','warning',1)
+               F:warning('contains no items',1)
                break;
             end -- run out of file!
             -- if we did bump into a doc comment, then we can continue parsing it
@@ -398,9 +401,11 @@ local function parse_file(fname, lang, package, args)
    return F
 end
 
+-- Parses a file, returns an instance of doc.File or nil.
+-- On crash in File:finish returns the error after File.
 function parse.file(name,lang, args)
-   local F,err = parse_file(name,lang,args.package,args)
-   if err or not F then return F,err end
+   local F = parse_file(name,lang,args.package,args)
+   if not F then return nil end
    local ok,err = xpcall(function() F:finish() end,debug.traceback)
    if not ok then return F,err end
    return F
