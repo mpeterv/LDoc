@@ -80,7 +80,7 @@ end
 
 function KindMap:put_kind_first (kind)
    -- find this kind in our kind list
-   local kinds = self.klass.kinds,kind
+   local kinds = self.klass.kinds
    local idx = tablex.find(kinds,kind)
    -- and swop with the start!
    if idx then
@@ -247,13 +247,10 @@ function M.writefile(name,text)
 end
 
 function M.name_of (lpath)
-   local ext
-   lpath,ext = path.splitext(lpath)
-   return lpath
+   return (path.splitext(lpath))
 end
 
 function M.this_module_name (basename,fname)
-   local ext
    if basename == '' then
       return M.name_of(fname)
    end

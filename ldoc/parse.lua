@@ -2,7 +2,6 @@
 
 local utils = require 'pl.utils'
 local List = require 'pl.List'
-local Map = require 'pl.Map'
 local stringio = require 'pl.stringio'
 local lexer = require 'ldoc.lexer'
 local tools = require 'ldoc.tools'
@@ -157,13 +156,6 @@ local function extract_tags (s,args)
    return tags --Map(tags)
 end
 
-local _xpcall = xpcall
-if true then
-   _xpcall = function(f) return true, f() end
-end
-
-
-
 -- parses a Lua or C file, looking for ldoc comments. These are like LuaDoc comments;
 -- they start with multiple '-'. (Block commments are allowed)
 -- If they don't define a name tag, then by default
@@ -202,8 +194,6 @@ local function parse_file(fname, lang, package, args)
       F:warning('empty file', 1)
       return nil
    end
-
-   local function filename () return fname end
 
    local function add_module(tags,module_found,old_style)
       tags:add('name',module_found)

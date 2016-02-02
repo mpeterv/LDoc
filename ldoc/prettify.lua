@@ -31,7 +31,6 @@ local cpp_lang = {C = true, c = true, cpp = true, cxx = true, h = true}
 
 function prettify.lua (lang, fname, code, initial_lineno, pre, linenos)
    local res, lexer, tokenizer = List(), require 'ldoc.lexer'
-   local tnext = lexer.skipws
    local ik = 1
    if not cpp_lang[lang] then
       tokenizer = lexer.lua

@@ -7,7 +7,7 @@ local doc = require 'ldoc.doc'
 local utils = require 'pl.utils'
 local stringx = require 'pl.stringx'
 local prettify = require 'ldoc.prettify'
-local quit, concat, lstrip = utils.quit, table.concat, stringx.lstrip
+local concat = table.concat
 local markup = {}
 
 local backtick_references

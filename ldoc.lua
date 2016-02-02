@@ -28,8 +28,6 @@ local tablex = require 'pl.tablex'
 -- Penlight compatibility
 utils.unpack = utils.unpack or unpack or table.unpack
 
-local append = table.insert
-
 local lapp = require 'pl.lapp'
 
 -- so we can find our private modules
@@ -80,7 +78,7 @@ local global = require 'ldoc.builtin.globals'
 local markup = require 'ldoc.markup'
 local parse = require 'ldoc.parse'
 local KindMap = tools.KindMap
-local Item,File,Module = doc.Item,doc.File,doc.Module
+local File = doc.File
 local quit = utils.quit
 
 
@@ -161,7 +159,6 @@ local function setup_kinds ()
 end
 
 
-local add_language_extension
 -- hacky way for doc module to be passed options...
 doc.ldoc = ldoc
 
@@ -284,7 +281,6 @@ end
 local quote = tools.quote
 --- processing command line and preparing for output ---
 
-local F
 local file_list = List()
 File.list = file_list
 local config_dir
@@ -299,7 +295,7 @@ if args.module then
    if args.file:match '^%a+$' and global.functions[args.file] then
       args.file = 'global.'..args.file
    end
-   local fullpath,mod,on_docpath = tools.lookup_existing_module_or_function (args.file, doc_path)
+   local fullpath,mod = tools.lookup_existing_module_or_function (args.file, doc_path)
    if not fullpath then
       quit(mod)
    else
@@ -320,7 +316,7 @@ if args.file == '.' then
       print('changing to directory',config_path)
       lfs.chdir(config_path)
    end
-   config_is_read = true
+
    args.file = ldoc.file or '.'
    if args.file == '.' then
       args.file = lfs.currentdir()
